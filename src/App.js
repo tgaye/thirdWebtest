@@ -45,10 +45,26 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { ThirdwebProvider, smartWallet, embeddedWallet, useAddress, ConnectWallet } from '@thirdweb-dev/react';
+import { ThirdwebProvider, smartWallet, embeddedWallet, useAddress, ConnectWallet, useSigner } from '@thirdweb-dev/react';
 
 function WalletConnect() {
   const address = useAddress();
+  const signer = useSigner();
+
+  const signMessage = async () => {
+    if (signer) {
+      try {
+        const signature = await signer.signMessage("I'm a user signing this message");
+        console.log("Signature:", signature);
+        alert("Message signed! Check the console for the signature.");
+      } catch (error) {
+        console.error("Error signing message:", error);
+        alert("Failed to sign message.");
+      }
+    } else {
+      alert("Wallet not connected or signer not available.");
+    }
+  };
 
   return (
     <div>
@@ -56,7 +72,7 @@ function WalletConnect() {
       {address && (
         <>
           <p>Connected Address: {address}</p>
-          {/* Add more logic or components here that depend on the wallet being connected */}
+          <button onClick={signMessage}>Sign Message</button>
         </>
       )}
     </div>
